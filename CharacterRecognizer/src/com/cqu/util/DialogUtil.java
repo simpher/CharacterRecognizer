@@ -8,20 +8,30 @@ import javax.swing.filechooser.FileFilter;
 public class DialogUtil {
 	
 	/**
-	 * 过滤文件的类型放在fileTypes数组中，比如{".jpg", ".png", ".bmp"},
-	 * 或者{"jpg", "png", "bmp"},或者{".*"}
+	 * 过滤文件的类型放在fileTypes数组中，比如{".jpg", ".png", ".bmp"},或者{".*"}
 	 * @param fileTypes
 	 * @return
 	 */
-	public static File dialogOpenFile(final String[] fileTypes)
+	public static File dialogOpenFile(final String[] fileTypes, String title, String defaultDir)
 	{
 		JFileChooser jfileChooser=new JFileChooser();
+		jfileChooser.setDialogTitle(title);
+		jfileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
+		if(defaultDir!=null&&defaultDir.length()>0)
+		{
+			jfileChooser.setCurrentDirectory(new File(defaultDir));
+		}
 		jfileChooser.setFileFilter(new FileFilter() {
 			
 			@Override
 			public String getDescription() {
 				// TODO Auto-generated method stub
-				return null;
+				String desc="";
+				for(int i=0;i<fileTypes.length;i++)
+				{
+					desc+=fileTypes[i]+";";
+				}
+				return desc;
 			}
 			
 			@Override
@@ -31,7 +41,7 @@ public class DialogUtil {
 				{
 					return true;
 				}
-				String fileName=file.getName();
+				String fileName=file.getName().toLowerCase();
 				if(fileTypes[0].equals(".*")==true)
 				{
 					return true;

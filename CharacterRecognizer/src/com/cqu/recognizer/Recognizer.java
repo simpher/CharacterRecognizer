@@ -7,12 +7,17 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import com.cqu.util.DialogUtil;
+import com.cqu.util.FileUtil;
+import com.cqu.util.XmlUtil;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
 
 public class Recognizer {
+	
+	public static final String SETTING_FILE_PATH="setting/settings.xml";
+	public static final String SETTING_NAME_DEFAULT_OPEN_DIR="default_open_dir";
 
 	private JFrame frame;
 
@@ -56,10 +61,12 @@ public class Recognizer {
 		JMenuItem menuItem = new JMenuItem("打开");
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				File f=DialogUtil.dialogOpenFile(new String[]{"jpg", "png", "gif"});
+				String defaultDir=XmlUtil.readSetting(SETTING_FILE_PATH, SETTING_NAME_DEFAULT_OPEN_DIR);
+				
+				File f=DialogUtil.dialogOpenFile(new String[]{".jpg"}, "打开文字图片", defaultDir);
 				if(f!=null)
 				{
-					
+					XmlUtil.writeSetting(SETTING_FILE_PATH, SETTING_NAME_DEFAULT_OPEN_DIR, FileUtil.getDirAndFullName(f)[0]);
 				}
 			}
 		});
