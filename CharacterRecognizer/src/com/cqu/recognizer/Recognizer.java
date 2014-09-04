@@ -1,7 +1,10 @@
 package com.cqu.recognizer;
 
-import java.awt.EventQueue;
+import ij.IJ;
+import ij.ImagePlus;
 
+import java.awt.EventQueue;
+import java.awt.Graphics;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -14,12 +17,16 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
 
-public class Recognizer {
+public class Recognizer extends JFrame{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 450043483540861678L;
 	public static final String SETTING_FILE_PATH="setting/settings.xml";
 	public static final String SETTING_NAME_DEFAULT_OPEN_DIR="default_open_dir";
-
-	private JFrame frame;
+	
+	private ImagePlus iplus;
 
 	/**
 	 * Launch the application.
@@ -29,7 +36,7 @@ public class Recognizer {
 			public void run() {
 				try {
 					Recognizer window = new Recognizer();
-					window.frame.setVisible(true);
+					window.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -48,12 +55,11 @@ public class Recognizer {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setBounds(100, 100, 450, 300);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JMenuBar menuBar = new JMenuBar();
-		frame.setJMenuBar(menuBar);
+		this.setJMenuBar(menuBar);
 		
 		JMenu menu = new JMenu("文件");
 		menuBar.add(menu);
@@ -67,10 +73,30 @@ public class Recognizer {
 				if(f!=null)
 				{
 					XmlUtil.writeSetting(SETTING_FILE_PATH, SETTING_NAME_DEFAULT_OPEN_DIR, FileUtil.getDirAndFullName(f)[0]);
+					
+					iplus=IJ.openImage(f.getPath());
+					int bitDepth=iplus.getBitDepth();
+					if(bitDepth!=24)
+					{
+						DialogUtil.dialogShowMessage("Warning", "图像不是24位RGB图像");
+					}else
+					{
+						repaint();
+					}
 				}
 			}
 		});
 		menu.add(menuItem);
+	}
+	
+	@Override
+	public void paint(Graphics g) {
+		// TODO Auto-generated method stub
+		super.paint(g);
+		if(iplus!=null)
+		{
+			g.drawImage(iplus.getImage(), 0, 0, this);
+		}
 	}
 
 }

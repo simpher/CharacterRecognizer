@@ -3,6 +3,7 @@ package com.cqu.util;
 import java.io.File;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 
 public class DialogUtil {
@@ -61,5 +62,10 @@ public class DialogUtil {
 			return jfileChooser.getSelectedFile();
 		}
 		return null;
+	}
+	
+	public static void dialogShowMessage(String dlgTitle, String msg)
+	{
+		JOptionPane.showOptionDialog(null, msg, dlgTitle, JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, new String[]{"OK", "Cancel"}, "OK");
 	}
 }

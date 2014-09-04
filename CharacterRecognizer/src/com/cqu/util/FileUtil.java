@@ -17,6 +17,6 @@ public class FileUtil {
 		{
 			index=path.lastIndexOf('\\');
 		}
-		return new String[]{path.substring(0, index), path.substring(index+1)};
+		return new String[]{path.substring(0, index+1), path.substring(index+1)};
 	}
 }
