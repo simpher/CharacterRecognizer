@@ -98,5 +98,11 @@ public class Recognizer extends JFrame{
 			g.drawImage(iplus.getImage(), 0, 0, this);
 		}
 	}
+	
+	@Override
+	public void update(Graphics g) {
+		// TODO Auto-generated method stub
+		super.update(g);
+	}
 
 }
