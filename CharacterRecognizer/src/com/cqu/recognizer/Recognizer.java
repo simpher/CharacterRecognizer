@@ -5,10 +5,14 @@ import ij.ImagePlus;
 
 import java.awt.EventQueue;
 import java.awt.Graphics;
+import java.awt.Rectangle;
+
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+
+import com.cqu.graph.DrawableArea;
 import com.cqu.util.DialogUtil;
 import com.cqu.util.FileUtil;
 import com.cqu.util.XmlUtil;
@@ -95,14 +99,12 @@ public class Recognizer extends JFrame{
 		super.paint(g);
 		if(iplus!=null)
 		{
-			g.drawImage(iplus.getImage(), 0, 0, this);
+			DrawableArea da=new DrawableArea(new Rectangle(0, 0, this.getWidth(), this.getHeight()));
+			Rectangle drawingRect=da.getObjectRect(iplus.getWidth(), iplus.getHeight());
+			da.drawBorder(g);
+			g.drawImage(iplus.getImage(), drawingRect.x, drawingRect.y, drawingRect.width, drawingRect.height, null);
 		}
 	}
 	
-	@Override
-	public void update(Graphics g) {
-		// TODO Auto-generated method stub
-		super.update(g);
-	}
-
+	
 }
