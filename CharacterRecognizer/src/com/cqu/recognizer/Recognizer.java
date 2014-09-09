@@ -2,7 +2,7 @@ package com.cqu.recognizer;
 
 import ij.IJ;
 import ij.ImagePlus;
-
+import ij.process.ImageConverter;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -11,6 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 import com.cqu.graph.DrawableArea;
 import com.cqu.util.DialogUtil;
@@ -30,6 +31,7 @@ public class Recognizer extends JFrame{
 	public static final String SETTING_FILE_PATH="setting/settings.xml";
 	public static final String SETTING_NAME_DEFAULT_OPEN_DIR="default_open_dir";
 	
+	private ImagePlus iplusRaw;
 	private ImagePlus iplus;
 
 	/**
@@ -65,11 +67,11 @@ public class Recognizer extends JFrame{
 		JMenuBar menuBar = new JMenuBar();
 		this.setJMenuBar(menuBar);
 		
-		JMenu menu = new JMenu("文件");
-		menuBar.add(menu);
+		JMenu menuFile = new JMenu("文件");
+		menuBar.add(menuFile);
 		
-		JMenuItem menuItem = new JMenuItem("打开");
-		menuItem.addActionListener(new ActionListener() {
+		JMenuItem menuItemOpen = new JMenuItem("打开");
+		menuItemOpen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String defaultDir=XmlUtil.readSetting(SETTING_FILE_PATH, SETTING_NAME_DEFAULT_OPEN_DIR);
 				
@@ -79,6 +81,7 @@ public class Recognizer extends JFrame{
 					XmlUtil.writeSetting(SETTING_FILE_PATH, SETTING_NAME_DEFAULT_OPEN_DIR, FileUtil.getDirAndFullName(f)[0]);
 					
 					iplus=IJ.openImage(f.getPath());
+					iplusRaw=iplus.duplicate();
 					int bitDepth=iplus.getBitDepth();
 					if(bitDepth!=24)
 					{
@@ -90,7 +93,70 @@ public class Recognizer extends JFrame{
 				}
 			}
 		});
-		menu.add(menuItem);
+		menuFile.add(menuItemOpen);
+		
+		JMenuItem menuItemOriginalPicture=new JMenuItem("原图");
+		menuItemOriginalPicture.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if(iplusRaw!=null)
+				{
+					iplus=iplusRaw;
+					repaint();
+				}
+			}
+		});
+		menuFile.add(menuItemOriginalPicture);
+		
+		JMenu menuEdit=new JMenu("编辑");
+		menuBar.add(menuEdit);
+		
+		JMenuItem menuItemGray8=new JMenuItem("8位灰度");
+		menuItemGray8.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if(iplus==null)
+				{
+					return;
+				}
+				if(iplus.getBitDepth()!=24)
+				{
+					DialogUtil.dialogShowMessage("Warning", "图像不是24位RGB图像");
+					return;
+				}
+				ImageConverter ic=new ImageConverter(iplus);
+				ic.convertToGray8();
+				repaint();
+			}
+		});
+		menuEdit.add(menuItemGray8);
+		
+		JMenuItem menuItemGray2=new JMenuItem("二值灰度");
+		menuItemGray2.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if(iplus==null)
+				{
+					return;
+				}
+				if(iplus.getBitDepth()!=8)
+				{
+					DialogUtil.dialogShowMessage("Warning", "图像不是8位灰度图像");
+					return;
+				}
+				String th=JOptionPane.showInputDialog("Threshold=", "128");
+				iplus.getProcessor().threshold(Integer.parseInt(th));
+				iplus.updateImage();
+				repaint();
+			}
+		});
+		menuEdit.add(menuItemGray2);
 	}
 	
 	@Override
