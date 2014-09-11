@@ -6,13 +6,17 @@ import ij.process.ImageConverter;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JToolBar;
 
+import com.cqu.algorithm.ImageData;
 import com.cqu.util.DialogUtil;
 import com.cqu.util.FileUtil;
 import com.cqu.util.XmlUtil;
@@ -33,6 +37,7 @@ public class Recognizer extends JFrame{
 	private ImagePlus iplusRaw;
 	private ImagePlus iplus;
 	private ImageCanvas imageCanvas;
+	private JLabel labelInfo;
 
 	/**
 	 * Launch the application.
@@ -91,6 +96,8 @@ public class Recognizer extends JFrame{
 					{
 						imageCanvas.setImageplus(iplus);
 						imageCanvas.refreshImage();
+						
+						setInfo(ImageData.easyTypeByBitDepth(iplus.getBitDepth()));
 					}
 				}
 			}
@@ -108,6 +115,8 @@ public class Recognizer extends JFrame{
 					iplus=iplusRaw;
 					imageCanvas.setImageplus(iplus);
 					imageCanvas.refreshImage();
+					
+					setInfo(ImageData.easyTypeByBitDepth(iplus.getBitDepth()));
 				}
 			}
 		});
@@ -134,6 +143,8 @@ public class Recognizer extends JFrame{
 				ImageConverter ic=new ImageConverter(iplus);
 				ic.convertToGray8();
 				imageCanvas.refreshImage();
+				
+				setInfo(ImageData.easyTypeByBitDepth(iplus.getBitDepth()));
 			}
 		});
 		menuEdit.add(menuItemGray8);
@@ -157,6 +168,8 @@ public class Recognizer extends JFrame{
 				iplus.getProcessor().threshold(Integer.parseInt(th));
 				iplus.updateImage();
 				imageCanvas.refreshImage();
+				
+				setInfo("二值灰度图像");
 			}
 		});
 		menuEdit.add(menuItemGray2);
@@ -168,6 +181,17 @@ public class Recognizer extends JFrame{
 		imageCanvas=new ImageCanvas();
 		contentPanel.add(imageCanvas, BorderLayout.CENTER);
 		
+		JToolBar statusBar=new JToolBar(JToolBar.HORIZONTAL);
+		labelInfo=new JLabel("就绪");
+		statusBar.add(labelInfo);
+		statusBar.setFloatable(false);
+		contentPanel.add(statusBar, BorderLayout.SOUTH);
+		
 		return contentPanel;
+	}
+	
+	private void setInfo(String info)
+	{
+		this.labelInfo.setText(info);
 	}
 }

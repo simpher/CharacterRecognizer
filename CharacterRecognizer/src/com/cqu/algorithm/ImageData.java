@@ -49,20 +49,39 @@ public class ImageData {
 		return type;
 	}
 	
-	public static ImageData toImageData(ImageProcessor ip)
+	private static String typeByBitDepth(int bitDepth)
 	{
-		String type=null;
-		int bitDepth=ip.getBitDepth();
 		if(bitDepth==24)
 		{
-			type=ImageData.TYPE_RGB24;
+			return ImageData.TYPE_RGB24;
 		}else if(bitDepth==8)
 		{
-			type=ImageData.TYPE_GRAY8;
+			return ImageData.TYPE_GRAY8;
 		}else if(bitDepth==2)
 		{
-			type=ImageData.TYPE_GRAY2;
+			return ImageData.TYPE_GRAY2;
+		}else
+		{
+			return null;
 		}
+	}
+	
+	public static String easyTypeByBitDepth(int bitDepth)
+	{
+		String type=typeByBitDepth(bitDepth);
+		if(type==null)
+		{
+			return "BitDepth="+bitDepth;
+		}else
+		{
+			return type;
+		}
+	}
+	
+	public static ImageData toImageData(ImageProcessor ip)
+	{
+		int bitDepth=ip.getBitDepth();
+		String type=typeByBitDepth(bitDepth);
 		if(type==null||!(ip.getPixels() instanceof byte[]))
 		{
 			return null;
