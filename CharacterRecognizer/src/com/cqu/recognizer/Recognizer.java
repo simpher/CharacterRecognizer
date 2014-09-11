@@ -3,17 +3,16 @@ package com.cqu.recognizer;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.process.ImageConverter;
-import java.awt.EventQueue;
-import java.awt.Graphics;
-import java.awt.Rectangle;
 
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
-import com.cqu.graph.DrawableArea;
 import com.cqu.util.DialogUtil;
 import com.cqu.util.FileUtil;
 import com.cqu.util.XmlUtil;
@@ -33,6 +32,7 @@ public class Recognizer extends JFrame{
 	
 	private ImagePlus iplusRaw;
 	private ImagePlus iplus;
+	private ImageCanvas imageCanvas;
 
 	/**
 	 * Launch the application.
@@ -63,6 +63,7 @@ public class Recognizer extends JFrame{
 	private void initialize() {
 		this.setBounds(100, 100, 450, 300);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setContentPane(this.createContentPanel());
 		
 		JMenuBar menuBar = new JMenuBar();
 		this.setJMenuBar(menuBar);
@@ -88,7 +89,8 @@ public class Recognizer extends JFrame{
 						DialogUtil.dialogShowMessage("Warning", "图像不是24位RGB图像");
 					}else
 					{
-						repaint();
+						imageCanvas.setImageplus(iplus);
+						imageCanvas.refreshImage();
 					}
 				}
 			}
@@ -104,7 +106,8 @@ public class Recognizer extends JFrame{
 				if(iplusRaw!=null)
 				{
 					iplus=iplusRaw;
-					repaint();
+					imageCanvas.setImageplus(iplus);
+					imageCanvas.refreshImage();
 				}
 			}
 		});
@@ -130,7 +133,7 @@ public class Recognizer extends JFrame{
 				}
 				ImageConverter ic=new ImageConverter(iplus);
 				ic.convertToGray8();
-				repaint();
+				imageCanvas.refreshImage();
 			}
 		});
 		menuEdit.add(menuItemGray8);
@@ -153,24 +156,18 @@ public class Recognizer extends JFrame{
 				String th=JOptionPane.showInputDialog("Threshold=", "128");
 				iplus.getProcessor().threshold(Integer.parseInt(th));
 				iplus.updateImage();
-				repaint();
+				imageCanvas.refreshImage();
 			}
 		});
 		menuEdit.add(menuItemGray2);
 	}
 	
-	@Override
-	public void paint(Graphics g) {
-		// TODO Auto-generated method stub
-		super.paint(g);
-		if(iplus!=null)
-		{
-			DrawableArea da=new DrawableArea(new Rectangle(0, 0, this.getWidth(), this.getHeight()));
-			Rectangle drawingRect=da.getObjectRect(iplus.getWidth(), iplus.getHeight());
-			da.drawBorder(g);
-			g.drawImage(iplus.getImage(), drawingRect.x, drawingRect.y, drawingRect.width, drawingRect.height, null);
-		}
+	private JPanel createContentPanel()
+	{
+		JPanel contentPanel=new JPanel(new BorderLayout());
+		imageCanvas=new ImageCanvas();
+		contentPanel.add(imageCanvas, BorderLayout.CENTER);
+		
+		return contentPanel;
 	}
-	
-	
 }

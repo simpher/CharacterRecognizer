@@ -9,16 +9,10 @@ public class DrawableArea {
 	
 	public DrawableArea(Rectangle rawRect) {
 		// TODO Auto-generated constructor stub
-		int offsetLeft=11;
-		int offsetTop=56;
-		int offsetRight=11;
-		int offsetBottom=11;
-		
-		validRect=new Rectangle(rawRect.x+offsetLeft, rawRect.y+offsetTop, rawRect.width-
-				offsetLeft-offsetRight, rawRect.height-offsetTop-offsetBottom);
+		validRect=new Rectangle(rawRect.x, rawRect.y, rawRect.width, rawRect.height);
 	}
 	
-	public DrawableArea(Rectangle rawRect, int spaceTop, int offsetLeft, int offsetTop, int offsetRight, int offsetBottom)
+	public DrawableArea(Rectangle rawRect, int offsetLeft, int offsetTop, int offsetRight, int offsetBottom)
 	{
 		validRect=new Rectangle(rawRect.x+offsetLeft, rawRect.y+offsetTop, rawRect.width-
 				offsetLeft-offsetRight, rawRect.height-offsetTop-offsetBottom);
