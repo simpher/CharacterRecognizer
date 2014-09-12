@@ -5,8 +5,10 @@ import ij.ImagePlus;
 import ij.process.ImageConverter;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
@@ -38,6 +40,7 @@ public class Recognizer extends JFrame{
 	private ImagePlus iplus;
 	private ImageCanvas imageCanvas;
 	private JLabel labelInfo;
+	private JLabel labelOnProcessing;
 
 	/**
 	 * Launch the application.
@@ -173,6 +176,8 @@ public class Recognizer extends JFrame{
 			}
 		});
 		menuEdit.add(menuItemGray2);
+		
+		this.processingOn(false);
 	}
 	
 	private JPanel createContentPanel()
@@ -182,9 +187,14 @@ public class Recognizer extends JFrame{
 		contentPanel.add(imageCanvas, BorderLayout.CENTER);
 		
 		JToolBar statusBar=new JToolBar(JToolBar.HORIZONTAL);
+		statusBar.setFloatable(false);
+		statusBar.addSeparator(new Dimension(5, statusBar.getHeight()));
 		labelInfo=new JLabel("就绪");
 		statusBar.add(labelInfo);
-		statusBar.setFloatable(false);
+		labelOnProcessing=new JLabel(new ImageIcon("resources/loading.gif"));
+		statusBar.addSeparator(new Dimension(5, statusBar.getHeight()));
+		statusBar.add(labelOnProcessing);
+		
 		contentPanel.add(statusBar, BorderLayout.SOUTH);
 		
 		return contentPanel;
@@ -193,5 +203,10 @@ public class Recognizer extends JFrame{
 	private void setInfo(String info)
 	{
 		this.labelInfo.setText(info);
+	}
+	
+	private void processingOn(boolean on)
+	{
+		this.labelOnProcessing.setVisible(on);
 	}
 }

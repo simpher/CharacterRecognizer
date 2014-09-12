@@ -192,6 +192,15 @@ public class FeatureExtractor {
                 }
             }
         }
+        int totalPixel=edgeSegmentCount*segmentRows*edgeSegmentCount*segmentCols;
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < edgeSegmentCount; j++)
+            {
+                et1Feature[i * edgeSegmentCount + j] = et1Feature[i * edgeSegmentCount + j] / totalPixel;
+                dt12Feature[i * edgeSegmentCount + j] = dt12Feature[i * edgeSegmentCount + j] / totalPixel;
+            }
+        }
         return CollectionUtil.merge(et1Feature, dt12Feature);
 	}
 	
